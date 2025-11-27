@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sqrt-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sqrt-service
+  template:
+    metadata:
+      labels:
+        app: sqrt-service
+    spec:
+      containers:
+      - name: sqrt-service
+        image: sqrt-service:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sqrt-service
+spec:
+  selector:
+    app: sqrt-service
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080

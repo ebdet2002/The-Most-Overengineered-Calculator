@@ -1,0 +1,45 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: calculator-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /api/add(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: add-service
+            port:
+              number: 80
+      - path: /api/sub(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: sub-service
+            port:
+              number: 80
+      - path: /api/mul(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: mul-service
+            port:
+              number: 80
+      - path: /api/div(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: div-service
+            port:
+              number: 80
+      - path: /(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend
+            port:
+              number: 80

@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mem-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mem-service
+  template:
+    metadata:
+      labels:
+        app: mem-service
+    spec:
+      containers:
+      - name: mem-service
+        image: mem-service:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 5000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mem-service
+spec:
+  selector:
+    app: mem-service
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5000

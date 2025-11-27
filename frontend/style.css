@@ -1,0 +1,155 @@
+:root {
+    --bg-color: #f0f0f0;
+    --calc-body: #e8e8e3;
+    /* Creamy white/beige */
+    --display-bg: #4a504d;
+    /* Dark grey/greenish */
+    --display-text: #e8e8e3;
+    --btn-dark: #4a4a4a;
+    /* Dark grey for functions */
+    --btn-light: #8c8c8c;
+    /* Grey for numbers - slightly darker than body */
+    --btn-accent: #3d3d3d;
+    /* Darker for operations */
+    --btn-equal: #e8a035;
+    /* Yellow/Orange for equals */
+    --text-color: #ffffff;
+    --shadow-light: rgba(255, 255, 255, 0.5);
+    --shadow-dark: rgba(0, 0, 0, 0.2);
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.calculator-container {
+    background-color: var(--calc-body);
+    width: 320px;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow:
+        10px 10px 30px var(--shadow-dark),
+        -5px -5px 20px var(--shadow-light);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.brand {
+    font-weight: 600;
+    font-size: 1.2rem;
+    color: #666;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+}
+
+.display-container {
+    background-color: var(--display-bg);
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+#display {
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: var(--display-text);
+    font-size: 2.5rem;
+    text-align: right;
+    font-family: 'Inter', monospace;
+    outline: none;
+}
+
+.keypad {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+}
+
+.btn {
+    border: none;
+    height: 60px;
+    width: 60px;
+    border-radius: 50%;
+    /* Round buttons */
+    font-size: 1.2rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.1s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    background-color: #a0a0a0;
+    /* Default number color */
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.btn:active {
+    transform: scale(0.95);
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.btn-dark {
+    background-color: #5e4b45;
+    /* Brownish dark */
+}
+
+.btn-accent {
+    background-color: #3e3e3e;
+    /* Black/Dark Grey */
+}
+
+.btn-equal {
+    background-color: var(--btn-equal);
+}
+
+.btn-wide {
+    grid-column: span 1;
+    /* Braun usually has single size buttons, but standard layout often has wide 0. Sticking to single for Braun look if possible, but grid implies 0 is single here. */
+}
+
+.btn-mem {
+    background-color: #7a8c87;
+    /* Muted Greenish Grey */
+}
+
+.expression-line {
+    min-height: 20px;
+    color: #a0a0a0;
+    font-size: 1rem;
+    text-align: right;
+    margin-bottom: 5px;
+    font-family: 'Inter', monospace;
+}
+
+/* Specific tweaks for Braun look */
+.btn {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.1));
+    background-color: #888;
+    /* Base grey */
+}
+
+.btn-dark {
+    background-color: #4b3b35;
+}
+
+/* Dark Brown */
+.btn-accent {
+    background-color: #222;
+}
+
+/* Black */
+.btn-equal {
+    background-color: #d48818;
+}
+
+/* Muted Orange */

@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: add-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: add-service
+  template:
+    metadata:
+      labels:
+        app: add-service
+    spec:
+      containers:
+      - name: add-service
+        image: add-service:latest
+        imagePullPolicy: Never # Use local image
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: add-service
+spec:
+  selector:
+    app: add-service
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080

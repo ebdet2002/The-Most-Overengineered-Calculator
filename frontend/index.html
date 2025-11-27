@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Over-Engineered Calculator</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="calculator-container">
+        <div class="brand">BRAUN</div>
+        <div class="display-container">
+            <div id="expression-display" class="expression-line"></div>
+            <input type="text" id="display" readonly value="0">
+        </div>
+        <div class="keypad">
+            <!-- Row 1: Memory & Clear -->
+            <button class="btn btn-mem" onclick="memoryClear()">MC</button>
+            <button class="btn btn-mem" onclick="memoryRecall()">MR</button>
+            <button class="btn btn-mem" onclick="memorySubtract()">M-</button>
+            <button class="btn btn-mem" onclick="memoryStore()">M+</button>
+
+            <!-- Row 2: Functions -->
+            <button class="btn btn-dark" onclick="clearDisplay()">C</button>
+            <button class="btn btn-dark" onclick="toggleSign()">+/-</button>
+            <button class="btn btn-dark" onclick="appendOperation('%')">%</button>
+            <button class="btn btn-accent" onclick="setOperation('sqrt')">√</button>
+
+            <!-- Row 3: Numbers & Div -->
+            <button class="btn" onclick="appendNumber('7')">7</button>
+            <button class="btn" onclick="appendNumber('8')">8</button>
+            <button class="btn" onclick="appendNumber('9')">9</button>
+            <button class="btn btn-accent" onclick="setOperation('div')">÷</button>
+
+            <!-- Row 4: Numbers & Mul -->
+            <button class="btn" onclick="appendNumber('4')">4</button>
+            <button class="btn" onclick="appendNumber('5')">5</button>
+            <button class="btn" onclick="appendNumber('6')">6</button>
+            <button class="btn btn-accent" onclick="setOperation('mul')">×</button>
+
+            <!-- Row 5: Numbers & Sub -->
+            <button class="btn" onclick="appendNumber('1')">1</button>
+            <button class="btn" onclick="appendNumber('2')">2</button>
+            <button class="btn" onclick="appendNumber('3')">3</button>
+            <button class="btn btn-accent" onclick="setOperation('sub')">-</button>
+
+            <!-- Row 6: Zero, Dot, Equal, Add -->
+            <button class="btn" onclick="appendNumber('0')">0</button>
+            <button class="btn" onclick="appendDecimal()">.</button>
+            <button class="btn btn-equal" onclick="calculate()">=</button>
+            <button class="btn btn-accent" onclick="setOperation('add')">+</button>
+        </div>
+    </div>
+    <script src="script.js?v=3"></script>
+</body>
+
+</html>
