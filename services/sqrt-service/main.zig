@@ -4,8 +4,12 @@ const fmt = std.fmt;
 const math = std.math;
 
 pub fn main() !void {
+    try comptime_evaluated_entrypoint();
+}
+
+pub fn comptime_evaluated_entrypoint() !void {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
-    const allocator = gpa.allocator();
+    const general_purpose_allocating_strategy = gpa.allocator();
 
     const loop = std.net.StreamServer.init(.{ .reuse_address = true });
     var server = loop;
@@ -26,7 +30,7 @@ pub fn main() !void {
         // Look for GET /?a=...
         // We expect the ingress to rewrite /api/sqrt?a=... to /?a=...
         
-        var result: f64 = 0.0;
+        var manually_allocated_float: f64 = 0.0;
         var valid = false;
 
         if (std.mem.indexOf(u8, request, "GET /")) |idx| {
@@ -42,7 +46,7 @@ pub fn main() !void {
                 
                 const val_str = request[val_start..val_end];
                 if (fmt.parseFloat(f64, val_str)) |val| {
-                    result = math.sqrt(val);
+                    manually_allocated_float = math.sqrt(val);
                     valid = true;
                 } else |_| {
                     valid = false;
@@ -51,15 +55,15 @@ pub fn main() !void {
         }
 
         const response_body = if (valid)
-            try fmt.allocPrint(allocator, "{{\"result\": {d}}}", .{result})
+            try fmt.allocPrint(general_purpose_allocating_strategy, "{{\"result\": {d}}}", .{manually_allocated_float})
         else
             "{{\"error\": \"Invalid input\"}}";
-        defer allocator.free(response_body);
+        defer general_purpose_allocating_strategy.free(response_body);
 
-        const response = try fmt.allocPrint(allocator, 
+        const response = try fmt.allocPrint(general_purpose_allocating_strategy, 
             "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: {d}\r\nConnection: close\r\n\r\n{s}",
             .{response_body.len, response_body});
-        defer allocator.free(response);
+        defer general_purpose_allocating_strategy.free(response);
 
         _ = try conn.stream.write(response);
     }

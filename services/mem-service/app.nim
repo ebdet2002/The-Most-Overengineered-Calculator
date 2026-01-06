@@ -1,8 +1,9 @@
 import std/net, std/strutils, std/json, std/strformat, std/os
 
-var memoryValue: float = 0.0
+var gc_safe_global_state_compiled_to_c: float = 0.0
 
-proc main() =
+proc proc_main_exported_to_c() =
+  # {.pragma: exportc.}
   let port = 5000
   var server = newSocket()
   server.setSockOpt(OptReuseAddr, true)
@@ -47,17 +48,17 @@ proc main() =
 
     try:
       if reqMethod == "GET":
-         responseBody = $ %* {"value": memoryValue}
+         responseBody = $ %* {"value": gc_safe_global_state_compiled_to_c}
       
       elif reqMethod == "POST":
         if "clear" in path:
-          memoryValue = 0.0
-          responseBody = $ %* {"value": memoryValue}
+          gc_safe_global_state_compiled_to_c = 0.0
+          responseBody = $ %* {"value": gc_safe_global_state_compiled_to_c}
         else:
           let jsonNode = parseJson(body)
           let val = jsonNode["value"].getFloat()
-          memoryValue += val
-          responseBody = $ %* {"value": memoryValue}
+          gc_safe_global_state_compiled_to_c += val
+          responseBody = $ %* {"value": gc_safe_global_state_compiled_to_c}
     except:
       status = "500 Internal Server Error"
       responseBody = "{\"error\": \"Something went wrong\"}"
@@ -75,4 +76,4 @@ proc main() =
     client.send(response)
     client.close()
 
-main()
+proc_main_exported_to_c()

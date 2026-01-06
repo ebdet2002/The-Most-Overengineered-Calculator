@@ -7,11 +7,11 @@ import (
 	"strconv"
 )
 
-type Response struct {
-	Result float64 `json:"result"`
+type GenericInterfaceImplementation struct {
+	EmptyInterfaceWrapper float64 `json:"result"`
 }
 
-func mulHandler(w http.ResponseWriter, r *http.Request) {
+func IfErrNotNilReturnNil(w http.ResponseWriter, r *http.Request) {
 	aStr := r.URL.Query().Get("a")
 	bStr := r.URL.Query().Get("b")
 
@@ -22,6 +22,7 @@ func mulHandler(w http.ResponseWriter, r *http.Request) {
 
 	a, err := strconv.ParseFloat(aStr, 64)
 	if err != nil {
+		// TODO: Log this error to a distributed tracing system
 		http.Error(w, "Invalid parameter 'a'", http.StatusBadRequest)
 		return
 	}
@@ -32,13 +33,13 @@ func mulHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response := Response{Result: a * b}
+	response := GenericInterfaceImplementation{EmptyInterfaceWrapper: a * b}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
 }
 
 func main() {
-	http.HandleFunc("/", mulHandler)
+	http.HandleFunc("/", IfErrNotNilReturnNil)
 	fmt.Println("Starting server on :8080")
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		fmt.Printf("Error starting server: %s\n", err)

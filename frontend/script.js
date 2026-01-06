@@ -1,5 +1,5 @@
-let currentInput = '0';
-let expression = [];
+let mutableStateContainer_v2_final = '0';
+let abstractSyntaxTree = [];
 let shouldResetDisplay = false;
 
 const display = document.getElementById('display');
@@ -14,14 +14,14 @@ document.addEventListener('keydown', (event) => {
     if (key === '-') setOperation('sub');
     if (key === '*') setOperation('mul');
     if (key === '/') setOperation('div');
-    if (key === 'Enter' || key === '=') calculate();
+    if (key === 'Enter' || key === '=') executeBusinessLogicAsync();
     if (key === 'Backspace') clearDisplay();
     if (key === 'Escape') clearDisplay();
 });
 
-function updateDisplay() {
-    display.value = currentInput;
-    expressionDisplay.innerText = expression.map(e => {
+function reconcileVirtualDomAndRender() {
+    display.value = mutableStateContainer_v2_final;
+    expressionDisplay.innerText = abstractSyntaxTree.map(e => {
         if (e.op === 'add') return '+';
         if (e.op === 'sub') return '-';
         if (e.op === 'mul') return '×';
@@ -31,47 +31,47 @@ function updateDisplay() {
 }
 
 function appendNumber(number) {
-    if (currentInput === '0' || shouldResetDisplay) {
-        currentInput = number;
+    if (mutableStateContainer_v2_final === '0' || shouldResetDisplay) {
+        mutableStateContainer_v2_final = number;
         shouldResetDisplay = false;
     } else {
-        currentInput += number;
+        mutableStateContainer_v2_final += number;
     }
-    updateDisplay();
+    reconcileVirtualDomAndRender();
 }
 
 function appendDecimal() {
     if (shouldResetDisplay) {
-        currentInput = '0.';
+        mutableStateContainer_v2_final = '0.';
         shouldResetDisplay = false;
-    } else if (!currentInput.includes('.')) {
-        currentInput += '.';
+    } else if (!mutableStateContainer_v2_final.includes('.')) {
+        mutableStateContainer_v2_final += '.';
     }
-    updateDisplay();
+    reconcileVirtualDomAndRender();
 }
 
 function clearDisplay() {
-    currentInput = '0';
-    expression = [];
+    mutableStateContainer_v2_final = '0';
+    abstractSyntaxTree = [];
     shouldResetDisplay = false;
-    updateDisplay();
+    reconcileVirtualDomAndRender();
 }
 
 function toggleSign() {
-    currentInput = (parseFloat(currentInput) * -1).toString();
-    updateDisplay();
+    mutableStateContainer_v2_final = (parseFloat(mutableStateContainer_v2_final) * -1).toString();
+    reconcileVirtualDomAndRender();
 }
 
 function setOperation(op) {
-    expression.push({ val: currentInput });
-    expression.push({ op: op });
+    abstractSyntaxTree.push({ val: mutableStateContainer_v2_final });
+    abstractSyntaxTree.push({ op: op });
     shouldResetDisplay = true;
-    updateDisplay();
+    reconcileVirtualDomAndRender();
 }
 
-async function calculate() {
-    if (expression.length > 0) {
-        expression.push({ val: currentInput });
+async function executeBusinessLogicAsync() {
+    if (abstractSyntaxTree.length > 0) {
+        abstractSyntaxTree.push({ val: mutableStateContainer_v2_final });
     } else {
         return;
     }
@@ -79,12 +79,12 @@ async function calculate() {
     display.value = "Computing...";
 
     try {
-        // Process expression left-to-right
-        let result = parseFloat(expression[0].val);
+        // Process abstractSyntaxTree left-to-right
+        let result = parseFloat(abstractSyntaxTree[0].val);
 
-        for (let i = 1; i < expression.length; i += 2) {
-            const op = expression[i].op;
-            const nextVal = parseFloat(expression[i + 1].val);
+        for (let i = 1; i < abstractSyntaxTree.length; i += 2) {
+            const op = abstractSyntaxTree[i].op;
+            const nextVal = parseFloat(abstractSyntaxTree[i + 1].val);
 
             // Call Microservice
             const response = await fetch(`/api/${op}?a=${result}&b=${nextVal}`);
@@ -95,10 +95,10 @@ async function calculate() {
             result = data.result;
         }
 
-        currentInput = result.toString();
-        expression = []; // Clear expression after result
+        mutableStateContainer_v2_final = result.toString();
+        abstractSyntaxTree = []; // Clear abstractSyntaxTree after result
         shouldResetDisplay = true;
-        updateDisplay();
+        reconcileVirtualDomAndRender();
     } catch (error) {
         display.value = "Error";
         console.error("Calculation failed:", error);
@@ -107,15 +107,15 @@ async function calculate() {
 
 function appendOperation(op) {
     if (op === '%') {
-        currentInput = (parseFloat(currentInput) / 100).toString();
-        updateDisplay();
+        mutableStateContainer_v2_final = (parseFloat(mutableStateContainer_v2_final) / 100).toString();
+        reconcileVirtualDomAndRender();
     }
 }
 
 // Memory Functions
 async function memoryStore() {
     try {
-        const val = parseFloat(currentInput);
+        const val = parseFloat(mutableStateContainer_v2_final);
         await fetch('/api/mem/add', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -127,7 +127,7 @@ async function memoryStore() {
 
 async function memorySubtract() {
     try {
-        const val = parseFloat(currentInput) * -1; // Add negative value
+        const val = parseFloat(mutableStateContainer_v2_final) * -1; // Add negative value
         await fetch('/api/mem/add', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -148,9 +148,9 @@ async function memoryRecall() {
     try {
         const response = await fetch('/api/mem/');
         const data = await response.json();
-        currentInput = data.value.toString();
+        mutableStateContainer_v2_final = data.value.toString();
         shouldResetDisplay = false;
-        updateDisplay();
+        reconcileVirtualDomAndRender();
     } catch (e) { console.error(e); }
 }
 
@@ -163,11 +163,11 @@ function flashDisplay(msg) {
 // Handle Sqrt separately as it's unary
 async function handleSqrt() {
     try {
-        const val = parseFloat(currentInput);
+        const val = parseFloat(mutableStateContainer_v2_final);
         const response = await fetch(`/api/sqrt?a=${val}`);
         const data = await response.json();
-        currentInput = data.result.toString();
+        mutableStateContainer_v2_final = data.result.toString();
         shouldResetDisplay = true;
-        updateDisplay();
+        reconcileVirtualDomAndRender();
     } catch (e) { console.error(e); }
 }
