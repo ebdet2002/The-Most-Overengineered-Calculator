@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  frontend:
+    build: 
+      context: ./frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - add-service
+      - sub-service
+      - mul-service
+      - div-service
+      - mem-service
+      - sqrt-service
+
+  add-service:
+    build: 
+      context: ./services/add-service
+    expose:
+      - "8080"
+
+  sub-service:
+    build: 
+      context: ./services/sub-service
+    expose:
+      - "8000"
+
+  mul-service:
+    build: 
+      context: ./services/mul-service
+    expose:
+      - "8080"
+
+  div-service:
+    build: 
+      context: ./services/div-service
+    expose:
+      - "8080"
+
+  mem-service:
+    build: 
+      context: ./services/mem-service
+    expose:
+      - "5000"
+
+  sqrt-service:
+    build: 
+      context: ./services/sqrt-service
+    expose:
+      - "8080"

@@ -47,17 +47,17 @@ proc main() =
 
     try:
       if reqMethod == "GET":
-         responseBody = fmt"{{\""value\"": {memoryValue}}}"
+         responseBody = $ %* {"value": memoryValue}
       
       elif reqMethod == "POST":
         if "clear" in path:
           memoryValue = 0.0
-          responseBody = fmt"{{\""value\"": {memoryValue}}}"
+          responseBody = $ %* {"value": memoryValue}
         else:
           let jsonNode = parseJson(body)
           let val = jsonNode["value"].getFloat()
           memoryValue += val
-          responseBody = fmt"{{\""value\"": {memoryValue}}}"
+          responseBody = $ %* {"value": memoryValue}
     except:
       status = "500 Internal Server Error"
       responseBody = "{\"error\": \"Something went wrong\"}"
